@@ -79,7 +79,7 @@ public class MyVisitor<T> extends KnightCodeBaseVisitor<T>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitFile(KnightCodeParser.FileContext ctx) {
-
+		// Write the Class file using ASM
         cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, ctx.getChild(1).getText(), null, "java/lang/Object",null);   
         {
@@ -93,7 +93,7 @@ public class MyVisitor<T> extends KnightCodeBaseVisitor<T>{
 		}
         mv=cw.visitMethod(Opcodes.ACC_PUBLIC+Opcodes.ACC_STATIC, "main", "([Ljava/lang/String;)V", null, null);
         mv.visitCode();
-
+		// Import the Scanner Class
 		mv.visitTypeInsn(Opcodes.NEW, "java/util/Scanner");
         mv.visitInsn(Opcodes.DUP);
         mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "in", "Ljava/io/InputStream;");
@@ -122,6 +122,7 @@ public class MyVisitor<T> extends KnightCodeBaseVisitor<T>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitVariable(KnightCodeParser.VariableContext ctx) {
+		// Get the data type and store it in the HashMap
         stackCounter ++;// System.out.println("visitVar");
 		Variable var = new Variable<>(stackCounter, "Empty Type");
 		ST.put(ctx.identifier().getText(), var);
@@ -189,7 +190,7 @@ public class MyVisitor<T> extends KnightCodeBaseVisitor<T>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitSetvar(KnightCodeParser.SetvarContext ctx) {
-        
+        // Assign Variable, Will go through the branch of the parse to get the data from each side
         //System.out.println("visitSetvar");
 		if (ctx.getChild(3).getChildCount() == 0){
 			mv.visitLdcInsn((String)ctx.getChild(3).getText());
@@ -283,7 +284,7 @@ public class MyVisitor<T> extends KnightCodeBaseVisitor<T>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitComparison(KnightCodeParser.ComparisonContext ctx) {
-
+		// Uses Labels to jump if true
 		Label ifTrueComp = new Label();
         Label endComp = new Label();
 
@@ -347,7 +348,7 @@ public class MyVisitor<T> extends KnightCodeBaseVisitor<T>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitPrint(KnightCodeParser.PrintContext ctx) {
-        
+        // Get the data type of the Variable and print it using the correct ASM code
         String child = ctx.getChild(1).getText();
         if (ST.containsKey(child)) { 			
             mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
@@ -378,6 +379,7 @@ public class MyVisitor<T> extends KnightCodeBaseVisitor<T>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitRead(KnightCodeParser.ReadContext ctx) {
+		// Get the data type in order to read the input correctly and store it using the correct ASM code
 		mv.visitVarInsn(Opcodes.ALOAD, 1);
 		if (ST.get(ctx.ID().getText()).getType().equals("STRING")) {
         	mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/Scanner", "nextLine", "()Ljava/lang/String;", false);
@@ -409,9 +411,9 @@ public class MyVisitor<T> extends KnightCodeBaseVisitor<T>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitDecision(KnightCodeParser.DecisionContext ctx) {
-		
+		// Uses a for loop to see if an ELSE exist, uses the labels to jump if true and uses the correct loop based on if an ELSE exist
 		Label ifTrue = new Label();
-        Label end = new Label();
+    	Label end = new Label();
 
 		boolean ifElse = false;
 		int ifThan = 1;
@@ -441,7 +443,7 @@ public class MyVisitor<T> extends KnightCodeBaseVisitor<T>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitLoop(KnightCodeParser.LoopContext ctx) {
-
+		// Switches up the comparison ASM code as well as the jump label to jump back up to the beginning if true and down at the bottom if false
 		Label ifTrueLoop = new Label();
         Label endLoop = new Label();
 
