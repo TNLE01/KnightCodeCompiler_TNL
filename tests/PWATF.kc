@@ -1,0 +1,51 @@
+PROGRAM PWATF
+# Program With All The Feature
+DECLARE
+    # Declaring Variables
+    INTEGER w
+    INTEGER x
+	INTEGER y
+	INTEGER z
+    STRING word1
+    STRING word2
+    STRING word3
+    STRING word4
+
+BEGIN
+    # Program begins
+
+    # Set Variables
+    SET w := 5
+    SET x := 10
+    SET y := w + y
+    SET word1 := "This is word1"
+    SET word2 := "word2"
+    SET word3 := "W3"
+
+    # Read From User Input
+    READ word4
+    READ z
+
+    # Print Variables
+    PRINT w
+    PRINT x
+    PRINT y
+    PRINT z
+    PRINT word1
+    PRINT word2
+    PRINT word3
+    PRINT word4
+
+    # If Statement
+    IF w <> 100 THEN PRINT "w not same as 100" ENDIF
+
+    # If Statement With Else
+    IF w = 100 THEN PRINT "w is the same as 100" ELSE PRINT "w not same as 100" ENDIF
+
+    # While Loop
+    WHILE y > 0 DO
+		PRINT y
+		SET y := y - 1
+    ENDWHILE
+
+END
